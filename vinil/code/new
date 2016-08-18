@@ -1,0 +1,16 @@
+I was wondering whether there was a possibility of us running our own server. 
+There are a couple of reasons for this, but mostly because we have a deamon
+running that is fairly processor-intensive and because it is Java-based and
+would be much faster with a Java-based server like Jigsaw than a general-
+purpose one that had to call Java through CGI (which requires forking off a 
+new process and starting up a new copy of the Java bytecode interpreter on 
+most servers). Also, we are planning to try our project in a classroom 
+setting once the school year begins again, and we need to be certain it is
+stable. Due to the number of experimental CGI programs on ThinkQuest's server,
+it occasionally crashes, and cut easily be sabotaged by a student not wanting
+to participate (for instance, last year's technical winner let users upload 
+flat C source).
+
+Thank you, 
+
+Piotr Mitros

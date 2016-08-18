@@ -1,0 +1,191 @@
+<<
+print."Initializing the vinil system"
+
+sto.(javaAvail <<
+  switch.(main.users.<<local.user>>.config.java
+    [[on true]]
+    [[off false]]
+    [[auto <<>>]]
+>>)
+
+sto.(error <<
+  ret.cat.("<html><head><title>error</title></head><body> <h1>Error:</h1><p>" 
+        htmlencode.<<param.1>>
+        "</p></body></html>")
+  >> 
+) {end error}
+
+sto.(sprint <<
+  sto.(param.1 cat.(param.1 param.2))
+  ret.<<param.1>>
+  >>
+) {end sprint}
+
+sto.(getpage <<
+  { First, verify the user }
+  if(not.equ.(main.logins.<<local.form.id>>.ip local.ip)
+    ret.<<error."IP does not match session IP. This may be caused by a SLIP or PPP connection that was disconnected. Please log in again.">> )
+
+  { Next, store the user info }
+  sto.(local.user main.logins.<<local.form.id>>.user)
+
+  { Verify the page exists }
+  if.(equ.(main.pages.<<local.form.page>> NULL)
+    ret.<<error."Page not found. Please report this error to <a href=\"pmitros@mit.edu\"pmitros@mit.edu</a>.">>
+
+  { Finally, return the page }
+  ret.<<main.pages.<<local.form.page>> >>
+>>)
+
+{main data structure}
+sto.(main [
+
+  [browserfeatures
+
+  ["users" [
+  ]] {end users}
+
+  ["logins" [
+  ]] {end logins}
+
+  ["pages" [
+    [ "login-q" load."login.html" ]
+    [ "login-f"
+         if.(
+           equ.(local.form.<<local.form.user>>.password local.form.password)
+           << {login succeeded}
+              sto.(local.form.id getUniqueKey)
+              sto.(main.logins.<<local.id>> main.template.login)
+              sto.(main.logins.<<local.id>>.user local.form.user)
+              sto.(main.logins.<<local.id>>.ip local.ip)
+              sto.(main.logins.<<local.id>>.password local.form.password)
+              ret.<<cat.("<html><head>Success</head><body><h1>Login successful.</h1> <p>Proceed to "
+                         link."index"
+                         "the index</a></p></body></html>")>>
+           >>
+           << {login failed}
+              ret.<<cat.(
+                  "<html><head>Failiure</head><body><h1>Login failed.</h1> <p>"
+                  link."login"
+                  
+           >>
+         )
+    [ "showmsg" "" ]
+    [ "listemail" <<
+        sto.(temp "")
+        sprint.(temp "<head><title>Mailbox</title></head>")
+        sprint.(temp "<body>Incoming e-mail</body>")
+        forall(local.user.in-mail 
+          <<
+             sprint.(temp "<li>From: <b>")
+             sprint.(temp htmlencode.<<main.email.<<param.1>>.from>>)
+             sprint.(temp "</b> >> <a href=\"showemail&")
+             sprint.(temp <<param.1>>)
+             sprint.(temp "\">)
+             sprint.(temp htmlencode.<<main.email.<<param.1>>.subject>>)
+             sprint.(temp "</a></li>")
+          >> 
+        ) { for all in in-mail }
+        sprint.(temp "</body></html>")
+        ret.temp
+      >> ]
+    [ "showemail" <<
+      >> ]
+    [ "sendemail-q" <<
+      >> ]
+    [ "sendemail-f" <<
+        {Verify form}
+        if.(or.(equ.(local.form.to NULL) 
+                equ.(local.form.body NULL)) 
+	  ret.error.("Enter all fields")
+        ) {end if}
+	if.(equ.(local.user NULL)
+	  ret.error.("User ID not found. Contact support.")
+        ) {end if}
+
+        {Create e-mail}
+	sto.(temp getUniqueID)
+	sto.(main.email.<<temp>> main.template.mail)
+
+        {set fields}
+        sto.(main.email.<<temp>>.from local.user)
+        sto.(main.email.<<temp>>.to local.form.to)
+	sto.(subject local.form.subject)
+        sto.(in-response-to local.form.response)
+        sto.(body local.form.body)
+
+        {add e-mail to in/outgoing mailboxes}
+        sto.(main.users.<<local.form.to>>.in-mail temp)
+        sto.(main.users.<<local.user>>.sent-mail temp)
+
+        {finish}
+        ret."<html><head>Success</head><body>Mail sent.</body></html>"
+      >> ]
+    [ "addresponse-q" <<
+      >> ]
+    [ "addresponse-f" <<
+      >> ]
+    [ "addlink-q" <<
+      >> ]
+    [ "addlink-f" <<
+      >> ]
+  ]] { End pages}
+
+  ["messages" [
+  ]]
+
+  ["email" [
+  ]]
+
+  ["template" [
+    ["login" [
+      [user ""]
+      [password ""]
+      [ip ""]
+    ]] {End template login}
+    ["user" [
+      [password ""]
+      [access 1]
+      [sent-mail ()]
+      [in-mail ()]
+      [i-email "notset@none.com"]
+      [webpage ""]
+      [config [
+        [java auto]
+        [frames auto]
+        [graphics auto]
+        [style default]
+      ]]{end user config }
+    ]] {end user template}
+
+    ["mail" [
+      ["from" ""]
+      ["to" ""]
+      ["subject" ""]
+      ["in-response-to" ""]
+      ["body" ""]
+    ]] {end mail template}
+
+    ["message" [
+      ["from" ""]
+      ["body" ""]
+      ["related" ""]
+      ["responses" ""]
+      ["links" ""]
+      ["add" ""]
+    ]] {end message template}
+  ]] {end templates}
+] {End main}
+
+sto.(main.users."pmitros" main.templates.user)
+sto.(main.users."pmitros".password "daqvs.bug")
+sto.(main.users."pmitros".access 100)
+
+sto.(main.users."guest" main.templates.user)
+sto.(main.users."guest".password "guest")
+sto.(main.users."guest".access 0)
+
+print."Initalization complete"
+ret.true
+>>
+

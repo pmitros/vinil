@@ -1,0 +1,27 @@
+The new pages look great. I would like to express my congratulations to 
+Samidh on a job well done. 
+
+Since the college page at The Rickoid Lounge seems to superceed the one I was 
+maintaining, I am taking that down. 
+
+A minor suggestion would be to try to keep more contrast between the letters
+and the background, as the followed links are almost invisible on the main
+page and the message board is pretty difficult to read. The way monitors
+show colors varies between platfroms, so on some it may appear fine. 
+
+Piotr Mitros
+
+-----------------------
+
+Note about colors for the technically minded: 
+In display (and input) devices, there is very rarely a linear relation between
+the input voltage and the amount of light emitted. Curiously enough, this
+relationship is exponential in almost all input and output devices. The
+exponent is called a gamma. Macintoshes and SGIs to hardware color correction
+and have a gamma of 1.8. PCs and most other Unix boxes tend to have a gamma
+of 2.2-2.5. For this reason, graphics made on a PC will look bleached on a
+Macintosh or SGI and the contrast between lighter colors will be much smaller.
+The reverse obviously also holds true. The PNG graphics format stores gamma
+information and will hopefully replace gif and jpg within a few years. Gamma
+can also differ between different monitors (and potentially graphics cards) on
+the same card. 

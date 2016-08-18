@@ -1,0 +1,33 @@
+The following are crucial:
+
+ string searchReplace(stringInput stringSearchString stringNewString)
+ replace all occurances of searchstring with newstring in inputstring
+
+ string HTMLEncode.stringIn
+ Find all <>&" and non-standarsd chars and replace them with &quot;, etc.
+
+ list_of_strings tokenize.(stringIn tokenType)
+ Return a list of strings consisting of the tokens in stringIn. 
+ A token is:
+   [whitespace]\n[whitespace]                if tokenType=SINGLE_BREAK
+   [whitespace]\n[whitespace]\n[whitespace]  if tokenType=DOUBLE_BREAK
+   [whitespace {' ' \t \r \n}]               if tokenType=WHITESPACE
+   [whitespace {' ' \t \r}]                  if tokenType=PARTWHITESPACE
+ In the case of the last, a single \n could be a token returned in the list.
+
+ string pureWord.stringWord
+   returns the string with all non-ASCIInumeric chars stripped off the ends.
+   For instance, "  hello, dolly,\n" would give "hello, dolly"
+
+ string ucase.stringWord
+ string lcase.stringWord
+   Change case.
+
+It would be convenient if all functions that can take a single parameter 
+could either take it as a single parameter or as a list of length 1.
+
+The following aren't as important:
+
+string makePara.(stringInput tokenType stringSeperator)
+Returns string with all paragraph breaks changed to separator. Paragraph 
+breaks are \n if type=SINGLE_BREAK or \nwhitespace\n 
